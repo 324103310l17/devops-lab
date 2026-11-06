@@ -37,3 +37,14 @@
         user: trader
         state: present
         key: "{{ lookup('file', lookup('env','HOME') + '/.ssh/id_ed25519.pub') }}"
+    - name: Configure sudo permissions for developers
+      copy:
+        dest: /etc/sudoers.d/developers
+        content: |
+          Cmnd_Alias SERVICE_CMDS = /usr/bin/systemctl status ssh, /usr/bin/systemctl restart ssh
+          Cmnd_Alias PKG_CMDS = /usr/bin/apt update
+          %developers ALL=(ALL) NOPASSWD: SERVICE_CMDS, PKG_CMDS
+        owner: root
+        group: root
+        mode: '0440'
+        validate: '/usr/sbin/visudo -cf %s'
