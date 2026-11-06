@@ -41,9 +41,13 @@
       copy:
         dest: /etc/sudoers.d/developers
         content: |
-          Cmnd_Alias SERVICE_CMDS = /usr/bin/systemctl status ssh, /usr/bin/systemctl restart ssh
-          Cmnd_Alias PKG_CMDS = /usr/bin/apt update
-          %developers ALL=(ALL) NOPASSWD: SERVICE_CMDS, PKG_CMDS
+          Cmnd_Alias GREETING_CTL = /usr/bin/systemctl start greeting, \
+                                    /usr/bin/systemctl stop greeting, \
+                                    /usr/bin/systemctl restart greeting, \
+                                    /usr/bin/systemctl status greeting
+
+          %developers ALL=(root) NOPASSWD: GREETING_CTL, \
+                              sudoedit /opt/engineering/greeting.py
         owner: root
         group: root
         mode: '0440'
